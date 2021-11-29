@@ -105,7 +105,8 @@ def _AddPrepareSubParser(subparsers):
   """Adds sub parser for sub command `prepare`."""
   def _Prepare(args):
     """The function of sub command `prepare`."""
-    sdk = _PlatformToSdk(args.platform) if args.platform else _GetSdk(args.id)
+    device_id = _GetSimID(args.id)
+    sdk = _PlatformToSdk(args.platform) if args.platform else _GetSdk(device_id)
     device_arch = args.arch
     with xctest_session.XctestSession(
         sdk=sdk,
@@ -141,8 +142,9 @@ def _AddTestSubParser(subparsers):
   """Adds sub parser for sub command `test`."""
   def _Test(args):
     """The function of sub command `test`."""
-    sdk = _PlatformToSdk(args.platform) if args.platform else _GetSdk(args.id)
-    device_arch = _GetDeviceArch(args.id, sdk)
+    device_id = _GetSimID(args.id)
+    sdk = _PlatformToSdk(args.platform) if args.platform else _GetSdk(device_id)
+    device_arch = _GetDeviceArch(device_id, sdk)
     with xctest_session.XctestSession(
         sdk=sdk,
         device_arch=device_arch,
@@ -155,7 +157,7 @@ def _AddTestSubParser(subparsers):
           test_type=args.test_type,
           signing_options=_GetJson(args.signing_options_json_path))
       session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
-      return session.RunTest(args.id)
+      return session.RunTest(device_id)
 
   test_parser = subparsers.add_parser(
       'test',
@@ -165,7 +167,7 @@ def _AddTestSubParser(subparsers):
   required_arguments.add_argument(
       '--id',
       required=True,
-      help='The device id. The device can be iOS real device or simulator.')
+      help='The device name. The device can be iOS real device or simulator.')
   optional_arguments = test_parser.add_argument_group('Optional arguments')
   optional_arguments.add_argument(
       '--platform',
@@ -277,6 +279,18 @@ def _PlatformToSdk(platform):
   raise ios_errors.IllegalArgumentError(
       'The platform %s is not supported. The supported values are %s.' %
       (platform, ios_constants.SUPPORTED_PLATFORMS))
+
+
+def _GetSimID(device_name):
+  """Gets the identifier of the target device with 'name' equal to 'device_name'."""
+  devices_list_output = subprocess.check_output(
+      ['xcrun', 'xcdevice', 'list']).decode('utf-8')
+  for device_info in json.loads(devices_list_output):
+    if device_info['name'] == device_name:
+      return device_info['identifier']
+
+  raise ios_errors.IllegalArgumentError(
+      'The device with name %s can not be found.' % device_name)
 
 
 def _GetSdk(device_id):
