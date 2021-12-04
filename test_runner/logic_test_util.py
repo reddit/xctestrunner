@@ -68,7 +68,10 @@ def RunLogicTestOnSim(sim_id,
   if developer_dir:
     simctl_env_vars['DEVELOPER_DIR'] = developer_dir
   command = [
-      'xcrun', 'simctl', 'spawn', '-s', sim_id,
+      # Excluding the `[-s | --standalone]` since this populates the `UIScreen.main.scale`
+      # value when the `test_bundle_path` is ran.
+      # 'xcrun', 'simctl', 'spawn', '-s', sim_id,
+      'xcrun', 'simctl', 'spawn', sim_id,
       xcode_info_util.GetXctestToolPath(ios_constants.SDK.IPHONESIMULATOR)]
   if args:
     command += args
