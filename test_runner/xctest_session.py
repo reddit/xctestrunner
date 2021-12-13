@@ -78,7 +78,8 @@ class XctestSession(object):
   # TODO(albertdai): Support bundle id as the value of app_under_test and
   # test_bundle.
   def Prepare(self, app_under_test=None, test_bundle=None,
-              xctestrun_file_path=None, test_type=None, signing_options=None):
+              xctestrun_file_path=None, test_type=None, signing_options=None,
+              launch_options=None):
     """Prepares the test session.
 
     If xctestrun_file is not provided, will use app under test and test bundle
@@ -102,6 +103,8 @@ class XctestSession(object):
     """
     if not signing_options:
       signing_options = {}
+    if not launch_options:
+      launch_options = {}
 
     if self._work_dir:
       if not os.path.exists(self._work_dir):
@@ -138,7 +141,10 @@ class XctestSession(object):
             'The test type %s is not supported. Supported test types are %s' %
             (test_type, ios_constants.SUPPORTED_TEST_TYPES))
 
-      if test_type != ios_constants.TestType.LOGIC_TEST:
+      # If we are a logic test and forcing to use `xcodebuild`, create a xctestrun_factory to be used for testing.
+      # This allows us to populate an xcresult bundle to house artifacts like those from snapshot test failures.
+      use_xcodebuild_logic_test = launch_options['env_vars'].get('REDDIT_USE_XCODEBUILD_LOGIC_TEST', False)
+      if test_type != ios_constants.TestType.LOGIC_TEST or (test_type == ios_constants.TestType.LOGIC_TEST and use_xcodebuild_logic_test):
         xctestrun_factory = xctestrun.XctestRunFactory(
             app_under_test_dir, test_bundle_dir, self._sdk, self._device_arch,
             test_type, signing_options, self._work_dir)

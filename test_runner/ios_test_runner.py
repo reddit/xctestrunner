@@ -118,7 +118,8 @@ def _AddPrepareSubParser(subparsers):
           test_bundle=args.test_bundle_path,
           xctestrun_file_path=args.xctestrun,
           test_type=args.test_type,
-          signing_options=_GetJson(args.signing_options_json_path))
+          signing_options=_GetJson(args.signing_options_json_path),
+          launch_options=_GetJson(args.launch_options_json_path))
       session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
 
   test_parser = subparsers.add_parser(
@@ -155,7 +156,8 @@ def _AddTestSubParser(subparsers):
           test_bundle=args.test_bundle_path,
           xctestrun_file_path=args.xctestrun,
           test_type=args.test_type,
-          signing_options=_GetJson(args.signing_options_json_path))
+          signing_options=_GetJson(args.signing_options_json_path),
+          launch_options=_GetJson(args.launch_options_json_path))
       session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
       return session.RunTest(device_id)
 
@@ -199,7 +201,8 @@ def _AddSimulatorTestSubParser(subparsers):
             test_bundle=args.test_bundle_path,
             xctestrun_file_path=args.xctestrun,
             test_type=args.test_type,
-            signing_options=_GetJson(args.signing_options_json_path))
+            signing_options=_GetJson(args.signing_options_json_path),
+            launch_options=_GetJson(args.launch_options_json_path))
         session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
         if not hostless:
           try:
