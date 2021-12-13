@@ -118,13 +118,18 @@ def _AddPrepareSubParser(subparsers):
           test_bundle=args.test_bundle_path,
           xctestrun_file_path=args.xctestrun,
           test_type=args.test_type,
-          signing_options=_GetJson(args.signing_options_json_path))
+          signing_options=_GetJson(args.signing_options_json_path),
+          launch_options=_GetJson(args.launch_options_json_path))
       session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
 
   test_parser = subparsers.add_parser(
       'prepare',
       help='Prepare the working directory to run the test.')
   required_arguments = test_parser.add_argument_group('Required arguments')
+  required_arguments.add_argument(
+      '--id',
+      required=True,
+      help='The device name. The device can be iOS real device or simulator.')
   required_arguments.add_argument(
       '--platform',
       help='The platform of the device. The value can be ios_device or '
@@ -155,7 +160,8 @@ def _AddTestSubParser(subparsers):
           test_bundle=args.test_bundle_path,
           xctestrun_file_path=args.xctestrun,
           test_type=args.test_type,
-          signing_options=_GetJson(args.signing_options_json_path))
+          signing_options=_GetJson(args.signing_options_json_path),
+          launch_options=_GetJson(args.launch_options_json_path))
       session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
       return session.RunTest(device_id)
 
@@ -199,7 +205,8 @@ def _AddSimulatorTestSubParser(subparsers):
             test_bundle=args.test_bundle_path,
             xctestrun_file_path=args.xctestrun,
             test_type=args.test_type,
-            signing_options=_GetJson(args.signing_options_json_path))
+            signing_options=_GetJson(args.signing_options_json_path),
+            launch_options=_GetJson(args.launch_options_json_path))
         session.SetLaunchOptions(_GetJson(args.launch_options_json_path))
         if not hostless:
           try:
