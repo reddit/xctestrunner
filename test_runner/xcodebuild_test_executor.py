@@ -31,7 +31,7 @@ from xctestrunner.simulator_control import simulator_util
 from xctestrunner.test_runner import runner_exit_codes
 
 
-_XCODEBUILD_TEST_STARTUP_TIMEOUT_SEC = 150
+_XCODEBUILD_TEST_STARTUP_TIMEOUT_SEC = 300
 _SIM_TEST_MAX_ATTEMPTS = 3
 _DEVICE_TEST_MAX_ATTEMPTS = 2
 _TAIL_SIM_LOG_LINE = 200
