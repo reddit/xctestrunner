@@ -127,6 +127,10 @@ def _AddPrepareSubParser(subparsers):
       help='Prepare the working directory to run the test.')
   required_arguments = test_parser.add_argument_group('Required arguments')
   required_arguments.add_argument(
+      '--id',
+      required=True,
+      help='The device name. The device can be iOS real device or simulator.')
+  required_arguments.add_argument(
       '--platform',
       help='The platform of the device. The value can be ios_device or '
            'ios_simulator.'

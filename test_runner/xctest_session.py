@@ -143,7 +143,7 @@ class XctestSession(object):
 
       # If we are a logic test and forcing to use `xcodebuild`, create a xctestrun_factory to be used for testing.
       # This allows us to populate an xcresult bundle to house artifacts like those from snapshot test failures.
-      use_xcodebuild_logic_test = launch_options['env_vars'].get('REDDIT_USE_XCODEBUILD_LOGIC_TEST', False)
+      use_xcodebuild_logic_test = launch_options.get('env_vars', {}).get('REDDIT_USE_XCODEBUILD_LOGIC_TEST', False)
       if test_type != ios_constants.TestType.LOGIC_TEST or (test_type == ios_constants.TestType.LOGIC_TEST and use_xcodebuild_logic_test):
         xctestrun_factory = xctestrun.XctestRunFactory(
             app_under_test_dir, test_bundle_dir, self._sdk, self._device_arch,
